@@ -61,9 +61,9 @@ body{min-height:100vh;margin:0;background:radial-gradient(circle at top,#1c2a3a 
         </label>
         <label>Tier
           <select id="tierSelect">
-            <option value="T4">Tier IV (4)</option>
+            <option value="T4" selected>Tier IV (4)</option>
             <option value="T5">Tier V (5)</option>
-            <option value="T6" selected>Tier VI (6)</option>
+            <option value="T6">Tier VI (6)</option>
             <option value="T7">Tier VII (7)</option>
             <option value="T8">Tier VIII (8)</option>
           </select>
@@ -98,43 +98,123 @@ const categories={
   icon:"⚔️",
   groups:[
    {title:"Forja del Guerrero",items:[
-    {name:"Espada Ancha",imageId:"MAIN_SWORD",materials:[["lingote","Lingotes",16],["cuero","Cuero",8]]},
-    {name:"Martillo",imageId:"2H_HAMMER",materials:[["lingote","Lingotes",24]]},
-    {name:"Hacha de Guerra",imageId:"2H_AXE",materials:[["lingote","Lingotes",16],["tablones","Tablones",8]]}
+    {name:"Espada Ancha",imagePath:"assets/espada_ancha.png",imageId:"MAIN_SWORD",materials:[["lingote","Lingotes",16],["cuero","Cuero",8]]},
+    {name:"Claymore",imagePath:"assets/claymore.png",materials:[["lingote","Lingotes",20],["cuero","Cuero",12]]},
+    {name:"Espadas Dobles",imagePath:"assets/espadas_dobles.png",materials:[["lingote","Lingotes",20],["cuero","Cuero",12]]},
+    {name:"Hacha de Guerra",imagePath:"assets/hacha_guerra.png",imageId:"2H_AXE",materials:[["lingote","Lingotes",16],["tablones","Tablones",8]]},
+    {name:"Gran Hacha",imagePath:"assets/gran_hacha.png",materials:[["lingote","Lingotes",20],["tablones","Tablones",12]]},
+    {name:"Alabarda",imagePath:"assets/alabarda.png",materials:[["lingote","Lingotes",20],["tablones","Tablones",12]]},
+    {name:"Maza",imagePath:"assets/maza.png",materials:[["lingote","Lingotes",16],["tela","Tela",8]]},
+    {name:"Maza Pesada",imagePath:"assets/maza_pesada.png",materials:[["lingote","Lingotes",20],["tela","Tela",12]]},
+    {name:"Lucero del Alba",imagePath:"assets/lucero_alba.png",materials:[["lingote","Lingotes",20],["tela","Tela",12]]},
+    {name:"Martillo",imagePath:"assets/martillo.png",imageId:"2H_HAMMER",materials:[["lingote","Lingotes",24]]},
+    {name:"Martillo de Asta",imagePath:"assets/martillo_asta.png",materials:[["lingote","Lingotes",20],["tela","Tela",12]]},
+    {name:"Gran Martillo",imagePath:"assets/gran_martillo.png",materials:[["lingote","Lingotes",20],["tela","Tela",12]]},
+    {name:"Ballesta",imagePath:"assets/ballesta.png",materials:[["tablones","Tablones",20],["lingote","Lingotes",12]]},
+    {name:"Ballesta Pesada",imagePath:"assets/ballesta_pesada.png",materials:[["tablones","Tablones",20],["lingote","Lingotes",12]]},
+    {name:"Ballesta Ligera",imagePath:"assets/ballesta_ligera.png",materials:[["tablones","Tablones",16],["lingote","Lingotes",8]]},
+    {name:"Guantes de Pelea",imagePath:"assets/guantes_pelea.png",materials:[["lingote","Lingotes",12],["cuero","Cuero",20]]},
+    {name:"Brazales de Batalla",imagePath:"assets/brazales_batalla.png",materials:[["lingote","Lingotes",20],["cuero","Cuero",12]]},
+    {name:"Guanteletes con Púas",imagePath:"assets/guanteletes_puas.png",materials:[["lingote","Lingotes",20],["cuero","Cuero",12]]}
    ]},
    {title:"Pabellón de Caza",items:[
-    {name:"Arco de Guerra",imageId:"2H_BOW",materials:[["tablones","Tablones",32]]},
-    {name:"Daga",imageId:"MAIN_DAGGER",materials:[["lingote","Lingotes",12],["cuero","Cuero",12]]}
+    {name:"Arco",imagePath:"assets/arco.png",materials:[["tablones","Tablones",32]]},
+    {name:"Arco de Guerra",imagePath:"assets/arco_guerra.png",imageId:"2H_BOW",materials:[["tablones","Tablones",32]]},
+    {name:"Arco Largo",imagePath:"assets/arco_largo.png",materials:[["tablones","Tablones",32]]},
+    {name:"Lanza",imagePath:"assets/lanza.png",materials:[["tablones","Tablones",16],["lingote","Lingotes",8]]},
+    {name:"Pica",imagePath:"assets/pica.png",materials:[["tablones","Tablones",20],["lingote","Lingotes",12]]},
+    {name:"Guja",imagePath:"assets/guja.png",materials:[["tablones","Tablones",20],["lingote","Lingotes",12]]},
+    {name:"Daga",imagePath:"assets/daga.png",imageId:"MAIN_DAGGER",materials:[["lingote","Lingotes",12],["cuero","Cuero",12]]},
+    {name:"Dagas Dobles",imagePath:"assets/dagas_dobles.png",materials:[["lingote","Lingotes",16],["cuero","Cuero",16]]},
+    {name:"Garras",imagePath:"assets/garras.png",materials:[["lingote","Lingotes",16],["cuero","Cuero",16]]},
+    {name:"Vara",imagePath:"assets/vara.png",materials:[["lingote","Lingotes",12],["cuero","Cuero",20]]},
+    {name:"Vara Férrea",imagePath:"assets/vara_ferrea.png",materials:[["lingote","Lingotes",12],["cuero","Cuero",20]]},
+    {name:"Bastón de Doble Filo",imagePath:"assets/doble_filo.png",materials:[["lingote","Lingotes",12],["cuero","Cuero",20]]},
+    {name:"Bastón Natural",imagePath:"assets/baston_natural.png",materials:[["tablones","Tablones",16],["tela","Tela",8]]},
+    {name:"Gran Bastón Natural",imagePath:"assets/gran_natural.png",materials:[["tablones","Tablones",20],["tela","Tela",12]]},
+    {name:"Bastón Salvaje",imagePath:"assets/baston_salvaje.png",materials:[["tablones","Tablones",20],["tela","Tela",12]]},
+    {name:"Bastón Merodeador",imagePath:"assets/baston_merodeador.png",materials:[["tablones","Tablones",20],["cuero","Cuero",12]]},
+    {name:"Bastón de Raíz",imagePath:"assets/baston_raiz.png",materials:[["tablones","Tablones",20],["cuero","Cuero",12]]},
+    {name:"Bastón Primigenio",imagePath:"assets/baston_primigenio.png",materials:[["tablones","Tablones",20],["cuero","Cuero",12]]}
    ]},
    {title:"Torre del Mago",items:[
-    {name:"Bastón Ígneo",imageId:"2H_FIRESTAFF",materials:[["tablones","Tablones",16],["lingote","Lingotes",8]]},
-    {name:"Bastón Sagrado",imageId:"MAIN_HOLYSTAFF",materials:[["tablones","Tablones",16],["tela","Tela",8]]}
+    {name:"Bastón Ígneo",imagePath:"assets/baston_igneo.png",imageId:"2H_FIRESTAFF",materials:[["tablones","Tablones",16],["lingote","Lingotes",8]]},
+    {name:"Gran Bastón Ígneo",imagePath:"assets/gran_igneo.png",materials:[["tablones","Tablones",20],["lingote","Lingotes",12]]},
+    {name:"Bastón Infernal",imagePath:"assets/baston_infernal.png",materials:[["tablones","Tablones",20],["lingote","Lingotes",12]]},
+    {name:"Bastón Sagrado",imagePath:"assets/baston_sagrado.png",imageId:"MAIN_HOLYSTAFF",materials:[["tablones","Tablones",16],["tela","Tela",8]]},
+    {name:"Gran Bastón Sagrado",imagePath:"assets/gran_sagrado.png",materials:[["tablones","Tablones",20],["tela","Tela",12]]},
+    {name:"Bastón Divino",imagePath:"assets/baston_divino.png",materials:[["tablones","Tablones",20],["tela","Tela",12]]},
+    {name:"Bastón Arcano",imagePath:"assets/baston_arcano.png",materials:[["tablones","Tablones",16],["lingote","Lingotes",8]]},
+    {name:"Gran Bastón Arcano",imagePath:"assets/gran_arcano.png",materials:[["tablones","Tablones",20],["lingote","Lingotes",12]]},
+    {name:"Bastón Enigmático",imagePath:"assets/baston_enigmatico.png",materials:[["tablones","Tablones",20],["lingote","Lingotes",12]]},
+    {name:"Bastón de Hielo",imagePath:"assets/baston_hielo.png",materials:[["tablones","Tablones",16],["lingote","Lingotes",8]]},
+    {name:"Gran Bastón de Hielo",imagePath:"assets/gran_hielo.png",materials:[["tablones","Tablones",20],["lingote","Lingotes",12]]},
+    {name:"Bastón Glacial",imagePath:"assets/baston_glacial.png",materials:[["tablones","Tablones",20],["lingote","Lingotes",12]]},
+    {name:"Bastón Maldito",imagePath:"assets/baston_maldito.png",materials:[["tablones","Tablones",16],["lingote","Lingotes",8]]},
+    {name:"Gran Bastón Maldito",imagePath:"assets/gran_maldito.png",materials:[["tablones","Tablones",20],["lingote","Lingotes",12]]},
+    {name:"Bastón Demoníaco",imagePath:"assets/baston_demoniaco.png",materials:[["tablones","Tablones",20],["lingote","Lingotes",12]]}
    ]}
   ]
  },
  cascos:{
   icon:"🪖",
-  groups:[{title:"Cascos de Placas / Cuero / Tela",items:[
-   {name:"Casco de Soldado",imageId:"HEAD_PLATE_SET1",materials:[["lingote","Lingotes",8]]},
-   {name:"Capucha de Mercenario",imageId:"HEAD_LEATHER_SET2",materials:[["cuero","Cuero",8]]},
-   {name:"Hábito de Erudito",imageId:"HEAD_CLOTH_SET1",materials:[["tela","Tela",8]]}
-  ]}]
+   groups:[
+    {title:"Placas (Guerrero)",items:[
+   {name:"Casco de Soldado",imagePath:"assets/casco_soldado.png",imageId:"HEAD_PLATE_SET1",materials:[["lingote","Lingotes",8]]},
+   {name:"Casco de Caballero",imagePath:"assets/casco_caballero.png",materials:[["lingote","Lingotes",8]]},
+    {name:"Casco de Guardián",imagePath:"assets/casco_guardian.png",materials:[["lingote","Lingotes",8]]}
+    ]},
+    {title:"Cuero (Cazador)",items:[
+   {name:"Capucha de Mercenario",imagePath:"assets/capucha_mercenario.png",imageId:"HEAD_LEATHER_SET2",materials:[["cuero","Cuero",8]]},
+   {name:"Capucha de Cazador",imagePath:"assets/capucha_cazador.png",materials:[["cuero","Cuero",8]]},
+    {name:"Capucha de Asesino",imagePath:"assets/capucha_asesino.png",materials:[["cuero","Cuero",8]]}
+    ]},
+    {title:"Tela (Mago)",items:[
+     {name:"Hábito de Erudito",imagePath:"assets/habito_erudito.png",imageId:"HEAD_CLOTH_SET1",materials:[["tela","Tela",8]]},
+     {name:"Hábito de Clérigo",imagePath:"assets/habito_clerigo.png",materials:[["tela","Tela",8]]},
+     {name:"Hábito de Mago",imagePath:"assets/habito_mago.png",materials:[["tela","Tela",8]]}
+    ]}
+   ]
  },
  armaduras:{
   icon:"🛡️",
-  groups:[{title:"Armaduras de Placas / Cuero / Tela",items:[
-   {name:"Armadura de Soldado",imageId:"ARMOR_PLATE_SET1",materials:[["lingote","Lingotes",16]]},
-   {name:"Chaqueta de Mercenario",imageId:"ARMOR_LEATHER_SET2",materials:[["cuero","Cuero",16]]},
-   {name:"Túnica de Clérigo",imageId:"ARMOR_CLOTH_SET1",materials:[["tela","Tela",16]]}
-  ]}]
+   groups:[
+    {title:"Placas (Guerrero)",items:[
+     {name:"Armadura de Soldado",imagePath:"assets/armadura_soldado.png",imageId:"ARMOR_PLATE_SET1",materials:[["lingote","Lingotes",16]]},
+     {name:"Armadura de Caballero",imagePath:"assets/armadura_caballero.png",materials:[["lingote","Lingotes",16]]},
+     {name:"Armadura de Guardián",imagePath:"assets/armadura_guardian.png",materials:[["lingote","Lingotes",16]]}
+    ]},
+    {title:"Cuero (Cazador)",items:[
+     {name:"Chaqueta de Mercenario",imagePath:"assets/chaqueta_mercenario.png",imageId:"ARMOR_LEATHER_SET2",materials:[["cuero","Cuero",16]]},
+     {name:"Chaqueta de Cazador",imagePath:"assets/chaqueta_cazador.png",materials:[["cuero","Cuero",16]]},
+     {name:"Chaqueta de Asesino",imagePath:"assets/chaqueta_asesino.png",materials:[["cuero","Cuero",16]]}
+    ]},
+    {title:"Tela (Mago)",items:[
+     {name:"Túnica de Erudito",imagePath:"assets/tunica_erudito.png",imageId:"ARMOR_CLOTH_SET1",materials:[["tela","Tela",16]]},
+     {name:"Túnica de Clérigo",imagePath:"assets/tunica_clerigo.png",materials:[["tela","Tela",16]]},
+     {name:"Túnica de Mago",imagePath:"assets/tunica_mago.png",materials:[["tela","Tela",16]]}
+    ]}
+   ]
  },
  zapatos:{
   icon:"👢",
-  groups:[{title:"Botas / Zapatos / Sandalias",items:[
-   {name:"Botas de Placas (Soldado)",imageId:"SHOES_PLATE_SET1",materials:[["lingote","Lingotes",8]]},
-   {name:"Zapatos de Asesino",imageId:"SHOES_LEATHER_SET3",materials:[["cuero","Cuero",8]]},
-   {name:"Sandalias de Erudito",imageId:"SHOES_CLOTH_SET1",materials:[["tela","Tela",8]]}
-  ]}]
+   groups:[
+    {title:"Placas (Guerrero)",items:[
+     {name:"Botas de Soldado",imagePath:"assets/botas_soldado.png",imageId:"SHOES_PLATE_SET1",materials:[["lingote","Lingotes",8]]},
+     {name:"Botas de Caballero",imagePath:"assets/botas_caballero.png",materials:[["lingote","Lingotes",8]]},
+     {name:"Botas de Guardián",imagePath:"assets/botas_guardian.png",materials:[["lingote","Lingotes",8]]}
+    ]},
+    {title:"Cuero (Cazador)",items:[
+     {name:"Zapatos de Mercenario",imagePath:"assets/zapatos_mercenario.png",materials:[["cuero","Cuero",8]]},
+     {name:"Zapatos de Cazador",imagePath:"assets/zapatos_cazador.png",materials:[["cuero","Cuero",8]]},
+     {name:"Zapatos de Asesino",imagePath:"assets/zapatos_asesino.png",imageId:"SHOES_LEATHER_SET3",materials:[["cuero","Cuero",8]]}
+    ]},
+    {title:"Tela (Mago)",items:[
+     {name:"Sandalias de Erudito",imagePath:"assets/sandalias_erudito.png",imageId:"SHOES_CLOTH_SET1",materials:[["tela","Tela",8]]},
+     {name:"Sandalias de Clérigo",imagePath:"assets/sandalias_clerigo.png",materials:[["tela","Tela",8]]},
+     {name:"Sandalias de Mago",imagePath:"assets/sandalias_mago.png",materials:[["tela","Tela",8]]}
+    ]}
+   ]
  },
  herramientas:{
   icon:"⛏️",
@@ -175,9 +255,15 @@ const categories={
 const itemIdsByName={
  "Espada Ancha":"MAIN_SWORD","Martillo":"2H_HAMMER","Hacha de Guerra":"2H_AXE",
  "Arco de Guerra":"2H_BOW","Daga":"MAIN_DAGGER","Bastón Ígneo":"2H_FIRESTAFF","Bastón Sagrado":"MAIN_HOLYSTAFF",
- "Casco de Soldado":"HEAD_PLATE_SET1","Capucha de Mercenario":"HEAD_LEATHER_SET2","Hábito de Erudito":"HEAD_CLOTH_SET1",
- "Armadura de Soldado":"ARMOR_PLATE_SET1","Chaqueta de Mercenario":"ARMOR_LEATHER_SET2","Túnica de Clérigo":"ARMOR_CLOTH_SET1",
- "Botas de Placas (Soldado)":"SHOES_PLATE_SET1","Zapatos de Asesino":"SHOES_LEATHER_SET3","Sandalias de Erudito":"SHOES_CLOTH_SET1"
+ "Casco de Soldado":"HEAD_PLATE_SET1","Casco de Caballero":"HEAD_PLATE_SET2","Casco de Guardián":"HEAD_PLATE_SET3",
+ "Capucha de Mercenario":"HEAD_LEATHER_SET2","Capucha de Cazador":"HEAD_LEATHER_SET1","Capucha de Asesino":"HEAD_LEATHER_SET3",
+ "Hábito de Erudito":"HEAD_CLOTH_SET1","Hábito de Clérigo":"HEAD_CLOTH_SET2","Hábito de Mago":"HEAD_CLOTH_SET3",
+ "Armadura de Soldado":"ARMOR_PLATE_SET1","Armadura de Caballero":"ARMOR_PLATE_SET2","Armadura de Guardián":"ARMOR_PLATE_SET3",
+ "Chaqueta de Mercenario":"ARMOR_LEATHER_SET2","Chaqueta de Cazador":"ARMOR_LEATHER_SET1","Chaqueta de Asesino":"ARMOR_LEATHER_SET3",
+ "Túnica de Erudito":"ARMOR_CLOTH_SET1","Túnica de Clérigo":"ARMOR_CLOTH_SET2","Túnica de Mago":"ARMOR_CLOTH_SET3",
+ "Botas de Soldado":"SHOES_PLATE_SET1","Botas de Caballero":"SHOES_PLATE_SET2","Botas de Guardián":"SHOES_PLATE_SET3",
+ "Zapatos de Mercenario":"SHOES_LEATHER_SET2","Zapatos de Cazador":"SHOES_LEATHER_SET1","Zapatos de Asesino":"SHOES_LEATHER_SET3",
+ "Sandalias de Erudito":"SHOES_CLOTH_SET1","Sandalias de Clérigo":"SHOES_CLOTH_SET2","Sandalias de Mago":"SHOES_CLOTH_SET3"
 };
 const localItemImages={
  "Espada Ancha":{T4:"imagenes/armas/t4_espada.png"},
@@ -262,10 +348,10 @@ function renderCatalog(){
    card.className="item-card";
    const icon=document.createElement("div");
    icon.className=`icon-wrapper tier-${tier}`;
-   const localItemPath=(localItemImages[item.name]||{})[tier]||"";
+   const localItemPath=item.imagePath||(localItemImages[item.name]||{})[tier]||"";
    addImage(icon,{
     localPath:localItemPath,
-    remoteId:itemIdsByName[item.name],
+   remoteId:item.imageId||itemIdsByName[item.name],
     tier,
     enchant,
     alt:item.name,
