@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AlbioncitoTools | Calculadora de Refinación</title>
+<style>
+:root{--bg:#10151d;--panel:#192330;--panel2:#202d3c;--line:#344456;--text:#edf3f8;--muted:#a8b6c5;--gold:#e8b84b;--green:#62d49a;--red:#ff7777;--blue:#79baff}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top,#1c2a3a 0,#10151d 55%);color:var(--text);font:15px/1.5 Arial,Helvetica,sans-serif}
+header{position:relative;padding:28px 18px 18px;text-align:center;border-bottom:1px solid var(--line);background:#111a25}
+header .brand{color:var(--gold);font-weight:800;letter-spacing:2px;font-size:13px}
+.back-link{position:absolute;top:14px;left:16px;display:inline-flex;align-items:center;gap:7px;padding:7px 10px;border:1px solid var(--line);border-radius:8px;background:#151f2b;color:var(--text);font-size:13px;text-decoration:none}
+.back-link:hover{border-color:var(--gold);color:var(--gold)}
+.back-link:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+h1{margin:7px 0 4px;font-size:clamp(25px,4vw,36px)}header p{margin:0;color:var(--muted)}
+main{max-width:1120px;margin:24px auto;padding:0 16px 40px}
+.notice{border:1px solid #725c2b;background:#332b1b;color:#f3d995;padding:12px 14px;border-radius:10px;margin-bottom:18px}
+.grid{display:grid;grid-template-columns:1.1fr .9fr;gap:18px}
+.card{background:linear-gradient(160deg,var(--panel),#151e29);border:1px solid var(--line);border-radius:14px;padding:18px;box-shadow:0 10px 28px #0003}
+h2{font-size:19px;margin:0 0 15px;color:var(--gold)}
+.fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.tier-field{grid-column:1/-1}
+.ench-field{grid-column:1/-1}
+.ench-picker{display:flex;gap:7px;flex-wrap:wrap}
+.ench-picker button{min-width:48px;padding:7px 10px;background:#0e1721;border:1.5px solid var(--line);color:var(--text)}
+.ench-picker button.active{border-color:var(--gold);background:#332b1b;color:var(--gold)}
+.option-picker{display:flex;gap:7px;flex-wrap:wrap}
+.option-picker button{padding:7px 10px;background:#0e1721;border:1.5px solid var(--line);color:var(--text)}
+.option-picker button.active{border-color:var(--gold);background:#332b1b;color:var(--gold)}
+.city-picker{display:flex;gap:7px;flex-wrap:wrap}
+.city-picker button{padding:7px 10px;background:#0e1721;border:1.5px solid var(--line);color:var(--text)}
+.city-picker button.active{border-color:var(--gold);background:#332b1b;color:var(--gold)}
+.live-widget{position:fixed;z-index:1000;top:14px;right:14px;width:min(480px,calc(100vw - 28px));font-size:13px}
+.live-toggle{margin-left:auto;display:flex!important;align-items:center;justify-content:center;gap:8px;width:auto;height:34px;padding:7px 12px!important;border:1px solid #2f5a44!important;border-radius:999px!important;background:#111b26!important;color:var(--text)!important;box-shadow:0 8px 24px #0007;cursor:pointer}
+.live-toggle .green-dot{width:12px;height:12px;border-radius:50%;background:#45df8b;box-shadow:0 0 12px #45df8b}
+.live-panel{display:none;position:absolute;top:42px;right:0;width:min(460px,calc(100vw - 28px));max-height:76vh;overflow:auto;padding:18px;border:1px solid var(--line);border-radius:12px;background:#101a25f5;box-shadow:0 12px 35px #000b;backdrop-filter:blur(10px)}
+.live-panel.open{display:block}
+.live-panel h2{margin:0 0 6px;font-size:18px}
+.live-landscape{display:block;width:100%;height:110px;margin-bottom:10px;object-fit:cover;object-position:center 45%;border:1px solid var(--line);border-radius:8px}
+.live-panel .green-dot{display:inline-block;width:9px;height:9px;margin-right:5px;border-radius:50%;background:#45df8b;box-shadow:0 0 10px #45df8b;vertical-align:1px}
+.live-panel p{margin:4px 0 10px;color:var(--muted);font-size:12px}
+.live-servers{display:flex;gap:8px;margin:12px 0}
+.live-servers button{flex:1;text-align:center;padding:8px 6px;border:1px solid #2f5a44;border-radius:7px;background:#151f2b;color:var(--text);font-size:12px}
+.live-servers button.active{border-color:var(--green);background:#173727;color:#fff}
+.live-state{display:flex;align-items:center;gap:8px;padding:9px 10px;border:1px solid #2c3a49;border-radius:8px;background:#151f2b}
+.live-state:before{content:"";flex:0 0 10px;height:10px;border-radius:50%;background:#f1c40f;box-shadow:0 0 8px #f1c40f}
+.live-state.confirmed:before{background:#2ecc71;box-shadow:0 0 8px #2ecc71}
+.live-state.error:before{background:#e74c3c;box-shadow:0 0 8px #e74c3c}
+.live-entry{padding:10px;margin-top:8px;border:1px solid #2c3a49;border-radius:8px;background:#20232a}
+.live-entry.live-event{position:relative;min-height:110px;background-image:linear-gradient(90deg,rgba(10,16,24,.92),rgba(10,16,24,.72)),url("banner-albioncito.jpg");background-size:cover;background-position:center 45%}
+.live-entry strong{display:block;color:var(--gold);font-size:14px}
+.live-entry small{color:var(--muted)}
+.live-bonus{display:grid;grid-template-columns:52px 1fr;gap:12px;align-items:center;margin-top:8px}
+.live-bonus.no-icon{grid-template-columns:1fr}
+.live-bonus img{width:52px;height:52px;object-fit:contain}
+.live-bonus small{display:block}
+.live-state.error{color:var(--red)}
+.live-state.confirmed{color:var(--green)}
+.live-source{font-size:12px!important;margin-top:14px!important;text-align:right}
+@media(max-width:700px){.live-widget{top:8px;right:8px}}
+.tier-picker{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:8px}
+.tier-picker button{display:grid;place-items:center;width:54px;height:54px;padding:5px;border:1.5px solid var(--line);border-radius:10px;background:#0e1721}
+.tier-picker button.active{border-color:var(--gold);background:#332b1b;box-shadow:0 0 0 2px #e8b84b22}
+.tier-picker img{width:42px;height:42px;object-fit:contain}
+.resource-name{display:flex;align-items:center;gap:8px}
+.resource-name img{width:38px;height:38px;object-fit:contain}
+.resource-name span{min-width:0}
+label{display:block;color:var(--muted);font-size:13px;margin-bottom:5px}
+input,select{width:100%;background:#0e1721;border:1px solid var(--line);border-radius:8px;padding:10px;color:var(--text);font-size:15px;min-width:0}
+input:focus,select:focus{outline:2px solid #79baff66;border-color:var(--blue)}
+.full{grid-column:1/-1}
+.resources{display:grid;gap:10px}
+.resource{display:grid;grid-template-columns:1.2fr .8fr .8fr;gap:8px;align-items:end;background:#111b26;border:1px solid #2c3a49;padding:10px;border-radius:10px}
+.resource strong{font-size:14px;align-self:center}
+.resource label{font-size:11px}
+.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px}
+button{border:0;border-radius:9px;padding:11px 15px;font-weight:700;cursor:pointer;background:var(--gold);color:#1c1b16}
+button.secondary{background:#2a3b4d;color:var(--text);border:1px solid var(--line)}
+.results{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.metric{background:#101a25;border:1px solid #2d3b4a;border-radius:10px;padding:13px}
+.metric span{display:block;color:var(--muted);font-size:12px}.metric strong{display:block;font-size:22px;margin-top:3px}
+.profit{font-size:27px!important;color:var(--green)}.negative{color:var(--red)!important}
+.result-note{color:var(--muted);font-size:12px;margin-top:12px}
+table{width:100%;border-collapse:collapse;margin-top:14px;font-size:13px}td,th{text-align:left;padding:9px 7px;border-bottom:1px solid var(--line)}th{color:var(--muted);font-weight:600}
+footer{text-align:center;color:var(--muted);font-size:12px;padding:10px 16px 25px}
+@media(max-width:800px){.grid{grid-template-columns:1fr}}@media(max-width:520px){.fields{grid-template-columns:1fr}.resource{grid-template-columns:1fr 1fr}.resource strong{grid-column:1/-1}.results{grid-template-columns:1fr 1fr}.card{padding:14px}}
+@media(max-width:520px){header{padding-top:62px}.back-link{top:12px;left:12px}}
+</style>
+</head>
+<body>
+<aside class="live-widget" aria-label="Albion Online en vivo">
+  <button type="button" class="live-toggle" id="liveToggle" aria-label="Estado: En vivo Albion Online" title="En vivo Albion Online" aria-expanded="false" aria-controls="livePanel">
+    <span>En vivo</span><span class="green-dot" aria-hidden="true"></span>
+  </button>
+  <section class="live-panel" id="livePanel" aria-label="Bonos y eventos activos">
+    <img class="live-landscape" src="banner-albioncito.jpg" alt="Paisaje de fantasía medieval de AlbioncitoTools">
+    <h2><span class="green-dot" aria-hidden="true"></span> En vivo Albion Online</h2>
+    <p>Bonos de fabricación de hoy y eventos activos por servidor.</p>
+    <div class="live-servers" role="group" aria-label="Seleccionar servidor">
+      <button type="button" data-region="americas" class="active">Américas</button>
+      <button type="button" data-region="europe">Europa</button>
+      <button type="button" data-region="asia">Asia</button>
+    </div>
+    <p id="liveRegionLabel" aria-live="polite">Actividad seleccionada: Américas · West</p>
+    <div id="liveState" class="live-state" role="status" aria-live="polite">Cargando datos del servidor…</div>
+    <div id="liveActivity"></div>
+    <p class="live-source">Fuente: <a href="https://www.albion-online-data.com/" target="_blank" rel="noopener noreferrer">Albion Data Project</a>. Los eventos se muestran solo si el snapshot del servidor está confirmado y vigente.</p>
+  </section>
+</aside>
+<header>
+  <a class="back-link" href="index.html"><span aria-hidden="true">←</span> Menú principal</a>
+  <div class="brand">ALBIONCITOTOOLS</div>
+  <h1>Calculadora de Refinación</h1>
+  <p>Calcula materiales, retorno, costos y ganancias de tu refinación</p>
+</header>
+<main>
+  <div class="notice"><strong>Modo manual:</strong> esta calculadora no consulta el mercado en vivo. Ingresa tus precios manualmente para calcular tus resultados.</div>
+  <div class="grid">
+    <section class="card">
+      <h2>⚒️ Configuración de refinación</h2>
+      <div class="fields">
+        <div><label for="resourceType">Recurso</label><select id="resourceType"><option>Mineral → Barras</option><option>Fibra → Tela</option><option>Cuero → Cuero curtido</option><option>Madera → Tablas</option><option>Piedra → Bloques</option></select></div>
+        <div class="tier-field">
+          <label for="tier">Tier</label>
+          <div class="tier-picker" aria-label="Seleccionar tier">
+            <button type="button" data-tier="T1" title="Tier 1" aria-label="Tier 1"><img src="assets/tier-1.png" alt="T1"></button>
+            <button type="button" data-tier="T2" title="Tier 2" aria-label="Tier 2"><img src="assets/tier-2.png" alt="T2"></button>
+            <button type="button" data-tier="T3" title="Tier 3" aria-label="Tier 3"><img src="assets/tier-3.png" alt="T3"></button>
+            <button type="button" data-tier="T4" title="Tier 4" aria-label="Tier 4"><img src="assets/tier-4.png" alt="T4"></button>
+            <button type="button" data-tier="T5" title="Tier 5" aria-label="Tier 5"><img src="assets/tier-5.png" alt="T5"></button>
+            <button type="button" data-tier="T6" title="Tier 6" aria-label="Tier 6"><img src="assets/tier-6.png" alt="T6"></button>
+            <button type="button" data-tier="T7" title="Tier 7" aria-label="Tier 7"><img src="assets/tier-7.png" alt="T7"></button>
+            <button type="button" data-tier="T8" title="Tier 8" aria-label="Tier 8"><img src="assets/tier-8.png" alt="T8"></button>
+          </div>
+          <select id="tier"><option>T1</option><option>T2</option><option>T3</option><option>T4</option><option>T5</option><option>T6</option><option>T7</option><option>T8</option></select>
+        </div>
+        <div class="ench-field">
+          <label>Encantamiento</label>
+          <div class="ench-picker" aria-label="Seleccionar encantamiento">
+            <button type="button" data-ench="0" class="active">.0</button>
+            <button type="button" data-ench="1">.1</button>
+            <button type="button" data-ench="2">.2</button>
+            <button type="button" data-ench="3">.3</button>
+            <button type="button" data-ench="4">.4</button>
+          </div>
+        </div>
+        <div>
+          <label>Usar foco</label>
+          <div class="option-picker" id="focusPicker">
+            <button type="button" data-focus="0" class="active">Sin foco</button>
+            <button type="button" data-focus="1">Con foco</button>
+          </div>
+        </div>
+        <div>
+          <label>Cuenta Premium</label>
+          <div class="option-picker" id="premiumPicker">
+            <button type="button" data-premium="1" class="active">Premium</button>
+            <button type="button" data-premium="0">Sin Premium</button>
+          </div>
+        </div>
+        <div class="ench-field">
+          <label>Ciudad de refinación</label>
+          <div class="city-picker" id="cityPicker">
+            <button type="button" data-city="none" class="active">Sin bono local</button>
+            <button type="button" data-city="ore">Thetford · mineral</button>
+            <button type="button" data-city="fiber">Lymhurst · fibra</button>
+            <button type="button" data-city="hide">Martlock · cuero</button>
+            <button type="button" data-city="wood">Fort Sterling · madera</button>
+            <button type="button" data-city="rock">Bridgewatch · piedra</button>
+          </div>
+        </div>
+        <div>
+          <label>Bono diario de actividad</label>
+          <div class="option-picker" id="dailyPicker">
+            <button type="button" data-daily="0" class="active">Ninguno</button>
+            <button type="button" data-daily="0.10">+10%</button>
+            <button type="button" data-daily="0.20">+20%</button>
+          </div>
+        </div>
+        <div><label for="quantity">Cantidad de productos a refinar</label><input id="quantity" type="number" min="1" value="100"></div>
+        <div><label for="returnRate">Retorno de recursos (%)</label><input id="returnRate" type="number" min="0" max="99.9" step="0.1" value="36.7"></div>
+        <div><label for="tax">Impuesto de estación (%)</label><input id="tax" type="number" min="0" max="100" step="0.1" value="6.5"></div>
+        <div><label for="outputPrice">Precio de venta por producto</label><input id="outputPrice" type="number" min="0" step="0.01" value="0"></div>
+      </div>
+      <h2 style="margin-top:22px">📦 Materiales necesarios</h2>
+      <p style="color:var(--muted);font-size:12px;margin-top:-9px">Edita la cantidad requerida y el precio unitario según tu receta y mercado.</p>
+      <div class="resources">
+        <div class="resource">
+          <strong class="resource-name"><img id="mainIcon" src="" alt=""><span id="mainName">Recurso principal</span></strong>
+          <div><label for="mainQty">Unidades por producto</label><input id="mainQty" type="number" min="0" step="0.01" value="2"></div>
+          <div><label for="mainPrice">Precio unitario</label><input id="mainPrice" type="number" min="0" step="0.01" value="0"></div>
+        </div>
+        <div class="resource">
+          <strong class="resource-name"><img id="extraIcon" src="" alt=""><span id="extraName">Recurso refinado anterior</span></strong>
+          <div><label for="extraQty">Unidades por producto</label><input id="extraQty" type="number" min="0" step="0.01" value="1"></div>
+          <div><label for="extraPrice">Precio unitario</label><input id="extraPrice" type="number" min="0" step="0.01" value="0"></div>
+        </div>
+        <div class="resource">
+          <strong>Material adicional (opcional)</strong>
+          <div><label for="otherQty">Unidades por producto</label><input id="otherQty" type="number" min="0" step="0.01" value="0"></div>
+          <div><label for="otherPrice">Precio unitario</label><input id="otherPrice" type="number" min="0" step="0.01" value="0"></div>
+        </div>
+      </div>
+      <div class="actions">
+        <button id="calculate">Calcular refinación</button>
+        <button class="secondary" id="reset" type="button">Restablecer</button>
+      </div>
+    </section>
+    <section class="card">
+      <h2>📊 Resultado estimado</h2>
+      <div class="results">
+        <div class="metric"><span>Ingresos por venta</span><strong id="revenue">0</strong></div>
+        <div class="metric"><span>Costo de materiales</span><strong id="cost">0</strong></div>
+        <div class="metric"><span>Recursos ahorrados por retorno</span><strong id="returned">0</strong></div>
+        <div class="metric"><span>Impuesto estimado</span><strong id="taxValue">0</strong></div>
+        <div class="metric full"><span>Ganancia / pérdida estimada</span><strong class="profit" id="profit">0</strong></div>
+        <div class="metric full"><span>Ganancia por producto</span><strong id="perItem">0</strong></div>
+      </div>
+      <p class="result-note">El retorno se aplica a los materiales configurados. El resultado es una estimación: no incluye transporte, tarifas de órdenes ni cambios de precio.</p>
+      <table>
+        <thead><tr><th>Detalle</th><th>Cantidad / valor</th></tr></thead>
+        <tbody>
+          <tr><td>Productos refinados</td><td id="outQty">100</td></tr>
+          <tr><td>Necesitas comprar de recurso principal</td><td id="mainBuy">0</td></tr>
+          <tr><td>Necesitas comprar del refinado anterior</td><td id="extraBuy">0</td></tr>
+          <tr><td>Material principal consumido (neto)</td><td id="mainNet">0</td></tr>
+          <tr><td>Material anterior consumido (neto)</td><td id="extraNet">0</td></tr>
+          <tr><td>Material adicional consumido (neto)</td><td id="otherNet">0</td></tr>
+        </tbody>
+      </table>
+    </section>
+  </div>
+</main>
+<footer>AlbioncitoTools · Herramienta independiente para Albion Online · Los precios son ingresados por el usuario</footer>
+<script>
+const $=id=>document.getElementById(id);
+const number=id=>Math.max(0,Number($(id).value)||0);
+const fmt=n=>new Intl.NumberFormat('es-CL',{maximumFractionDigits:2}).format(n);
+function calculate(){
+ const q=Math.max(1,number('quantity'));
+ let rr=Math.min(99.9,number('returnRate'))/100;
+ if(useFocus) rr=Math.min(99.9,rr+0.172);
+ const cityResource={ore:'Mineral → Barras',fiber:'Fibra → Tela',hide:'Cuero → Cuero curtido',wood:'Madera → Tablas',rock:'Piedra → Bloques'};
+ const cityApplies=cityBonus===0.40 && cityResource[selectedCityKey]===$('resourceType').value;
+ rr=Math.min(99.9,rr+(cityApplies?cityBonus:0)+dailyBonus);
+ const taxRate=Math.min(100,number('tax'))/100;
+ const main=q*number('mainQty'), extra=q*number('extraQty'), other=q*number('otherQty');
+ const mainBuy=Math.ceil(main/(1-rr)), extraBuy=Math.ceil(extra/(1-rr)), otherBuy=Math.ceil(other/(1-rr));
+ const mainNet=mainBuy*(1-rr), extraNet=extraBuy*(1-rr), otherNet=otherBuy*(1-rr);
+ const cost=mainNet*number('mainPrice')+extraNet*number('extraPrice')+otherNet*number('otherPrice');
+ const revenue=q*number('outputPrice'), tax=revenue*taxRate, profit=revenue-tax-cost;
+ $('revenue').textContent=fmt(revenue);$('cost').textContent=fmt(cost);$('returned').textContent=fmt((mainBuy+extraBuy+otherBuy)*rr);
+ $('taxValue').textContent=fmt(tax);$('profit').textContent=fmt(profit);$('profit').className=profit<0?'negative':'profit';
+ $('perItem').textContent=fmt(profit/q);$('outQty').textContent=fmt(q);
+ $('mainNet').textContent=fmt(mainNet);$('extraNet').textContent=fmt(extraNet);$('otherNet').textContent=fmt(otherNet);
+ $('mainBuy').textContent=fmt(mainBuy);$('extraBuy').textContent=fmt(extraBuy);
+}
+$('calculate').addEventListener('click',calculate);
+$('reset').addEventListener('click',()=>{ $('quantity').value=100;$('returnRate').value=36.7;$('tax').value=6.5;$('outputPrice').value=0;$('mainQty').value=2;$('mainPrice').value=0;$('extraQty').value=1;$('extraPrice').value=0;$('otherQty').value=0;$('otherPrice').value=0;enchantment=0;useFocus=false;isPremium=true;cityBonus=0;dailyBonus=0;selectedCityKey='none';enchButtons.forEach((button,index)=>button.classList.toggle('active',index===0));document.querySelectorAll('#focusPicker button').forEach((button,index)=>button.classList.toggle('active',index===0));document.querySelectorAll('#premiumPicker button').forEach((button,index)=>button.classList.toggle('active',index===0));document.querySelectorAll('#cityPicker button').forEach((button,index)=>button.classList.toggle('active',index===0));document.querySelectorAll('#dailyPicker button').forEach((button,index)=>button.classList.toggle('active',index===0));updateResourceIcons();calculate();});
+document.querySelectorAll('input,select').forEach(el=>el.addEventListener('input',calculate));
+const tierSelect=$('tier');
+const tierButtons=document.querySelectorAll('.tier-picker button');
+const enchButtons=document.querySelectorAll('.ench-picker button');
+let enchantment=0;
+let useFocus=false;
+let isPremium=true;
+let cityBonus=0;
+let dailyBonus=0;
+let selectedCityKey='none';
+const resourceSelect=$('resourceType');
+const resources={
+ 'Mineral → Barras':{raw:'ORE',rawName:'Mineral',output:'METALBAR',outputName:'Barras'},
+ 'Fibra → Tela':{raw:'FIBER',rawName:'Fibra',output:'CLOTH',outputName:'Tela'},
+ 'Cuero → Cuero curtido':{raw:'HIDE',rawName:'Piel',output:'LEATHER',outputName:'Cuero curtido'},
+ 'Madera → Tablas':{raw:'WOOD',rawName:'Madera',output:'PLANKS',outputName:'Tablones'},
+ 'Piedra → Bloques':{raw:'ROCK',rawName:'Piedra',output:'STONEBLOCK',outputName:'Bloques'}
+};
+const availableFallback={
+ 'ORE': ['T2_ORE','T2_METALBAR'],
+ 'METALBAR': ['T2_METALBAR'],
+ 'FIBER': ['T2_FIBER'],
+ 'CLOTH': ['T2_CLOTH'],
+ 'HIDE': ['T1_HIDE','T2_HIDE'],
+ 'LEATHER': ['T2_LEATHER'],
+ 'WOOD': ['T1_WOOD','T2_WOOD'],
+ 'PLANKS': ['T2_PLANKS'],
+ 'ROCK': ['T1_ROCK','T2_ROCK'],
+ 'STONEBLOCK': ['T2_STONEBLOCK']
+};
+function iconPath(tier, suffix, enchanted=enchantment){
+ if(enchanted>0){
+  const enchantedPath=`assets/T${tier}_${suffix}_LEVEL${enchanted}@${enchanted}.png`;
+  const rawTierSupported=[4,5,6,7,8].includes(tier);
+  if(rawTierSupported) return enchantedPath;
+ }
+ const preferred=`T${tier}_${suffix}`;
+ const existing=availableFallback[suffix] || [];
+ if(tier===1){
+  if(['HIDE','WOOD','ROCK'].includes(suffix) && existing.includes(preferred)) return `assets/${preferred}.png`;
+  return `assets/T2_${suffix}.png`;
+ }
+ return `assets/${preferred}.png`;
+}
+async function updateResourceIcons(){
+ const tier=Number(tierSelect.value.slice(1));
+ const resource=resources[resourceSelect.value];
+ const tierPrefix=`T${tier}`;
+ const mainPath=iconPath(tier,resource.raw);
+ $('mainIcon').src=mainPath;
+ $('mainIcon').alt=resource.rawName;
+ $('mainName').textContent=`${resource.rawName} ${tierPrefix}`;
+ if(tier<=1){
+  $('extraIcon').style.display='none';
+  $('extraName').textContent='Sin refinado anterior';
+ }else{
+  const previousPrefix=`T${tier-1}`;
+  $('extraIcon').style.display='';
+  $('extraIcon').src=iconPath(tier-1,resource.output);
+  $('extraIcon').alt=`${resource.outputName} ${previousPrefix}`;
+  $('extraName').textContent=`${resource.outputName} ${previousPrefix}`;
+ }
+ tierButtons.forEach(button=>{
+  const buttonTier=Number(button.dataset.tier.slice(1));
+  const image=button.querySelector('img');
+   image.src=iconPath(buttonTier,resource.output);
+  image.alt=`${resource.outputName} T${buttonTier}`;
+  button.title=`${resource.outputName} T${buttonTier}`;
+ });
+}
+function syncTierButtons(){
+ tierButtons.forEach(button=>button.classList.toggle('active',button.dataset.tier===tierSelect.value));
+ updateResourceIcons();
+}
+tierButtons.forEach(button=>button.addEventListener('click',()=>{
+ tierSelect.value=button.dataset.tier;
+ syncTierButtons();
+ tierSelect.dispatchEvent(new Event('input',{bubbles:true}));
+}));
+tierSelect.addEventListener('change',syncTierButtons);
+resourceSelect.addEventListener('change',updateResourceIcons);
+enchButtons.forEach(button=>button.addEventListener('click',()=>{
+ enchantment=Number(button.dataset.ench);
+ enchButtons.forEach(item=>item.classList.toggle('active',item===button));
+ updateResourceIcons();
+}));
+document.querySelectorAll('#focusPicker button').forEach(button=>button.addEventListener('click',()=>{
+ useFocus=button.dataset.focus==='1';
+ document.querySelectorAll('#focusPicker button').forEach(item=>item.classList.toggle('active',item===button));
+ calculate();
+}));
+document.querySelectorAll('#premiumPicker button').forEach(button=>button.addEventListener('click',()=>{
+ isPremium=button.dataset.premium==='1';
+ document.querySelectorAll('#premiumPicker button').forEach(item=>item.classList.toggle('active',item===button));
+ $('tax').value=isPremium?'6.5':'10.5';
+ calculate();
+}));
+document.querySelectorAll('#cityPicker button').forEach(button=>button.addEventListener('click',()=>{
+ selectedCityKey=button.dataset.city;
+ cityBonus=selectedCityKey==='none'?0:0.40;
+ document.querySelectorAll('#cityPicker button').forEach(item=>item.classList.toggle('active',item===button));
+ calculate();
+}));
+document.querySelectorAll('#dailyPicker button').forEach(button=>button.addEventListener('click',()=>{
+ dailyBonus=Number(button.dataset.daily);
+ document.querySelectorAll('#dailyPicker button').forEach(item=>item.classList.toggle('active',item===button));
+ calculate();
+}));
+
+const liveToggle=$('liveToggle');
+const livePanel=$('livePanel');
+const regionNames={americas:'Américas · West',europe:'Europa',asia:'Asia · East'};
+const apiRegions={americas:'west',europe:'europe',asia:'east'};
+const regionButtons=document.querySelectorAll('.live-servers button');
+const savedRegion=localStorage.getItem('albionLiveRegion');
+let selectedRegion=regionNames[savedRegion]?savedRegion:'americas';
+let liveRequestId=0;
+const bonusLabels={
+ SWORD:'Espada',AXE:'Hacha',CROSSBOW:'Ballesta',HAMMER:'Martillo',MACE:'Maza',KNUCKLES:'Guantes de guerra',
+ PLATE_HELMET:'Casco de placas',PLATE_ARMOR:'Armadura de placas',PLATE_SHOES:'Botas de placas',SPEAR:'Lanza',BOW:'Arco',
+ NATURESTAFF:'Bastón de naturaleza',DAGGER:'Daga',QUARTERSTAFF:'Bastón',SHAPESHIFTERSTAFF:'Bastón cambiaformas',
+ LEATHER_HELMET:'Capucha de cuero',LEATHER_ARMOR:'Chaqueta de cuero',LEATHER_SHOES:'Zapatos de cuero',ARCANESTAFF:'Bastón arcano',
+ CURSESTAFF:'Bastón maldito',FIRESTAFF:'Bastón de fuego',FROSTSTAFF:'Bastón de hielo',HOLYSTAFF:'Bastón sagrado',
+ CLOTH_HELMET:'Capucha de tela',CLOTH_ARMOR:'Túnica de tela',CLOTH_SHOES:'Sandalias de tela',OFFHAND:'Mano secundaria',
+ FIBER:'Fibra',WOOD:'Madera',ROCK:'Piedra',ORE:'Mineral',HIDE:'Piel',
+ TOOLS:'Herramienta',GATHERERGEAR:'Equipo de recolección',POTION:'Poción',FOOD:'Comida',BAG:'Bolsa',CAPE:'Capa'
+};
+const bonusIcons={
+ HAMMER:'assets/T8_2H_HAMMER.png',PLATE_SHOES:'assets/T8_SHOES_PLATE_SET1.png',OFFHAND:'assets/T8_OFF_TORCH.png',
+ CAPE:'assets/T8_CAPE.png',QUARTERSTAFF:'assets/T8_2H_QUARTERSTAFF.png',SHAPESHIFTERSTAFF:'assets/T8_2H_SHAPESHIFTER_SET1.png'
+};
+const weeklyEvents={
+ STATIC_DUNGEONS:{title:'Invade las fortalezas enemigas',description:'+15% de fama en mazmorras estáticas de mundo abierto y fortalezas de jefes de mundo.'},
+ HELLDUNGEON:{title:'Evento de Profundidades'},
+ CORRUPTED:{title:'Evento de mazmorras corruptas'},
+ HELLGATE:{title:'Evento de puertas infernales'},
+ GROUP_AND_RAID_DUNGEONS:{title:'Evento de mazmorras de grupo e incursión'},
+ SOLO_DUNGEONS:{title:'Evento de mazmorras en solitario'},
+ ROAMING_MOBS:{title:'Evento de enemigos del mundo abierto'},
+ ROADS:{title:'Evento de Caminos de Avalon'},
+ MISTS:{title:'Evento de las Nieblas'},
+ FAME:{title:'Evento de fama'}
+};
+function selectLiveRegion(region){
+ if(!regionNames[region]) return;
+ selectedRegion=region;
+ regionButtons.forEach(button=>button.classList.toggle('active',button.dataset.region===region));
+ $('liveRegionLabel').textContent=`Actividad seleccionada: ${regionNames[region]}`;
+ localStorage.setItem('albionLiveRegion',region);
+ loadServerFestivities(region);
+}
+regionButtons.forEach(button=>button.addEventListener('click',()=>selectLiveRegion(button.dataset.region)));
+selectLiveRegion(selectedRegion);
+function eventDate(ticks){
+ const value=Number(ticks);
+ if(!Number.isFinite(value)||value<=0) return null;
+ const date=new Date(value/10000-62135596800000);
+ return Number.isNaN(date.getTime())?null:date;
+}
+function countdownText(end){
+ const minutes=Math.max(0,Math.ceil((end-Date.now())/60000));
+ const days=Math.floor(minutes/1440),hours=Math.floor((minutes%1440)/60),remaining=minutes%60;
+ if(days) return `${days} d ${hours} h`;
+ if(hours) return `${hours} h ${remaining} min`;
+ return `${remaining} min`;
+}
+function addLiveEntry({title,description,end,icon,event}){
+ const card=document.createElement('div');
+ card.className=`live-entry${event?' live-event':''}`;
+ const heading=document.createElement('strong');
+ heading.textContent=title;
+ card.appendChild(heading);
+ const row=document.createElement('div');
+ row.className=`live-bonus${icon?'':' no-icon'}`;
+ if(icon){
+  const image=document.createElement('img');
+  image.src=icon;
+  image.alt='';
+  image.loading='lazy';
+  row.appendChild(image);
+ }
+ const details=document.createElement('div');
+ if(description) details.textContent=description;
+ const endLabel=document.createElement('small');
+ endLabel.className='live-countdown';
+ endLabel.dataset.end=end.toISOString();
+ endLabel.textContent=`Termina dentro de ${countdownText(end)}`;
+ details.appendChild(endLabel);
+ row.appendChild(details);
+ card.appendChild(row);
+ $('liveActivity').appendChild(card);
+}
+function renderFestivities(snapshot){
+ const now=Date.now();
+ const confirmedAt=Date.parse(snapshot.ConfirmedAt||'');
+ const expiresAt=Date.parse(snapshot.ExpiresAt||'');
+ const state=$('liveState'),activity=$('liveActivity');
+ activity.replaceChildren();
+ if(!Number.isFinite(confirmedAt)||!Number.isFinite(expiresAt)||expiresAt<=now){
+  state.className='live-state error';
+  state.textContent='Albion Data Project aún no tiene datos confirmados y vigentes para este servidor.';
+  return;
+ }
+ state.className='live-state confirmed';
+ state.textContent=`Confirmado por Albion Data Project · actualizado ${new Date(confirmedAt).toLocaleTimeString('es-CL',{hour:'2-digit',minute:'2-digit',timeZone:'UTC'})} UTC`;
+ const current=(snapshot.Events||[]).map(event=>({
+  ...event,start:eventDate(event.StartTime),end:eventDate(event.EndTime)
+ })).filter(event=>event.start&&event.end&&event.start<=now&&now<event.end);
+ const bonuses=current.filter(event=>event.Kind===2);
+ const activities=current.filter(event=>event.Kind===1);
+ if(bonuses.length){
+  const heading=document.createElement('div');
+  heading.className='live-entry';
+  const title=document.createElement('strong');
+  title.textContent='Bonos de fabricación de hoy';
+  heading.appendChild(title);
+  $('liveActivity').appendChild(heading);
+  bonuses.forEach(event=>{
+   const match=/^(COMMON|RARE)_(.+)$/.exec(event.UniqueName||'');
+   const category=match?match[2]:'';
+   const label=bonusLabels[category]||category.replace(/_/g,' ').toLowerCase();
+   const percent=match?(match[1]==='COMMON'?10:20):null;
+   addLiveEntry({
+    title:`${label}${percent?` · +${percent}%`:''}`,
+    end:event.end,icon:bonusIcons[category]||null
+   });
+  });
+ }else{
+  const empty=document.createElement('div');
+  empty.className='live-entry';
+  empty.textContent='No hay bonos de fabricación activos confirmados ahora.';
+  activity.appendChild(empty);
+ }
+ activities.forEach(event=>{
+  const known=weeklyEvents[event.UniqueName]||{title:(event.UniqueName||'Evento activo').replace(/_/g,' ').toLowerCase(),description:''};
+  addLiveEntry({title:known.title,description:known.description||'Evento de actividad activo.',end:event.end,event:true});
+ });
+ if(!activities.length){
+  const empty=document.createElement('div');
+  empty.className='live-entry';
+  empty.textContent='No hay eventos rotativos activos confirmados ahora.';
+  activity.appendChild(empty);
+ }
+}
+async function loadServerFestivities(region){
+ const requestId=++liveRequestId;
+ const state=$('liveState');
+ state.className='live-state';
+ state.textContent=`Consultando actividades de ${regionNames[region]}…`;
+ try{
+  const response=await fetch(`https://${apiRegions[region]}.albion-online-data.com/api/v2/stats/festivities`,{headers:{Accept:'application/json'}});
+  if(!response.ok) throw new Error(`Albion Data Project respondió HTTP ${response.status}`);
+  const snapshot=await response.json();
+  if(!snapshot||snapshot.Server!==apiRegions[region]||!Array.isArray(snapshot.Events)) throw new Error('Respuesta de festividades inválida');
+  if(requestId===liveRequestId) renderFestivities(snapshot);
+ }catch(error){
+  if(requestId!==liveRequestId) return;
+  console.error('No se pudieron cargar las festividades de Albion Online:',error);
+  $('liveActivity').replaceChildren();
+  state.className='live-state error';
+  state.textContent='No se pudieron cargar los datos ahora. Revisa tu conexión e inténtalo más tarde.';
+ }
+}
+function updateLiveCountdowns(){
+ let expired=false;
+ document.querySelectorAll('.live-countdown').forEach(label=>{
+  const end=Date.parse(label.dataset.end);
+  if(Number.isFinite(end)){
+   if(end<=Date.now()) expired=true;
+   else label.textContent=`Termina dentro de ${countdownText(end)}`;
+  }
+ });
+ if(expired) loadServerFestivities(selectedRegion);
+}
+setInterval(updateLiveCountdowns,60000);
+setInterval(()=>loadServerFestivities(selectedRegion),120000);
+liveToggle.addEventListener('click',()=>{
+ const isOpen=livePanel.classList.toggle('open');
+ liveToggle.setAttribute('aria-expanded',isOpen?'true':'false');
+});
+document.addEventListener('click',event=>{
+ if(!event.target.closest('.live-widget')){
+  livePanel.classList.remove('open');
+  liveToggle.setAttribute('aria-expanded','false');
+ }
+});
+document.addEventListener('keydown',event=>{
+ if(event.key==='Escape'){
+  livePanel.classList.remove('open');
+  liveToggle.setAttribute('aria-expanded','false');
+  liveToggle.focus();
+ }
+});
+syncTierButtons();
+calculate();
+</script>
+</body>
+</html>

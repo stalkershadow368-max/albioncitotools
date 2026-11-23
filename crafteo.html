@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#10151d">
+<title>Crafteo | AlbioncitoTools</title>
+<meta name="description" content="Catálogo manual de recetas de armas, equipo, herramientas y recolección para Albion Online.">
+<style>
+:root{color-scheme:dark;--bg:#10151d;--panel:#192330;--line:#344456;--text:#edf3f8;--muted:#a8b6c5;--gold:#e8b84b;--green:#62d49a}
+*{box-sizing:border-box}
+body{min-height:100vh;margin:0;background:radial-gradient(circle at top,#1c2a3a 0,#10151d 55%);color:var(--text);font:15px/1.5 Arial,Helvetica,sans-serif}
+.page{max-width:1050px;margin:0 auto;padding:24px 16px 40px}
+.back-link{display:inline-flex;align-items:center;gap:7px;margin-bottom:18px;padding:7px 10px;border:1px solid var(--line);border-radius:8px;background:#151f2b;color:var(--text);text-decoration:none}
+.back-link:hover{border-color:var(--gold);color:var(--gold)}
+.back-link:focus-visible,.cat-btn:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--green);outline-offset:2px}
+.catalog{padding:20px;border:1px solid #2a2e39;border-radius:14px;background:#141a22;box-shadow:0 10px 28px #0004}
+.craft-header{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:16px;padding-bottom:16px;margin-bottom:16px;border-bottom:1px solid var(--line)}
+.craft-title{margin:0;color:var(--gold);font-size:clamp(22px,4vw,30px)}
+.intro{margin:6px 0 0;color:var(--muted)}
+.controls{display:flex;flex-wrap:wrap;gap:10px}
+.controls label{display:grid;gap:4px;color:var(--muted);font-size:12px}
+.controls input,.controls select{min-width:145px;padding:9px 11px;border:1px solid #3c4252;border-radius:7px;background:#222630;color:#fff;font:inherit}
+.controls input{min-width:190px}
+.cat-tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
+.cat-btn{padding:8px 12px;border:1px solid #323846;border-radius:8px;background:#1f232c;color:var(--muted);font:inherit;font-weight:700;cursor:pointer}
+.cat-btn:hover{background:#2a303d;color:#fff}
+.cat-btn[aria-pressed="true"]{border-color:var(--gold);background:#49381a;color:var(--gold)}
+.subcat-title{margin:22px 0 12px;padding-left:10px;border-left:4px solid var(--gold);color:var(--gold);font-size:16px;text-transform:uppercase}
+.items-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:12px}
+.item-card{display:flex;align-items:center;gap:12px;min-width:0;padding:12px;border:1px solid #2e3340;border-radius:10px;background:#1d2028}
+.item-card:hover{border-color:#5c677d}
+.icon-wrapper{position:relative;display:grid;place-items:center;width:68px;height:68px;flex:none;overflow:hidden;border:2px solid #485063;border-radius:10px;background:#262b36}
+.icon-wrapper img{width:100%;height:100%;object-fit:contain}
+.icon-fallback{font-size:30px}
+.tier-T4{border-color:#3498db;background:#192a3a}.tier-T5{border-color:#e74c3c;background:#381c1c}.tier-T6{border-color:#e67e22;background:#3b2615}.tier-T7{border-color:#f1c40f;background:#383114}.tier-T8{border-color:#ecf0f1;background:#2f3238}
+.tier-badge{position:absolute;top:3px;left:3px;padding:1px 5px;border-radius:4px;background:#000c;color:#fff;font-size:11px;font-weight:700}
+.item-details{min-width:0;flex:1}
+.item-name{margin:0 0 2px;color:#fff;font-size:15px}
+.item-note{margin:0 0 7px;color:var(--muted);font-size:12px}
+.materials-list{display:flex;flex-wrap:wrap;gap:6px}
+.mat-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 7px;border:1px solid #3a4050;border-radius:6px;background:#282c37;font-size:12px}
+.mat-badge img{width:20px;height:20px;object-fit:contain}
+.empty,.catalog-note{color:var(--muted)}
+.empty{margin:18px 0}.catalog-note{margin:16px 0 0;font-size:12px}
+@media(max-width:700px){.page{padding:14px 10px 28px}.catalog{padding:14px}.craft-header{align-items:flex-start}.controls{width:100%}.controls label{flex:1 1 130px}.controls input,.controls select{width:100%;min-width:0}}
+</style>
+</head>
+<body>
+<main class="page">
+  <a class="back-link" href="index.html"><span aria-hidden="true">←</span> Menú principal</a>
+  <section class="catalog" aria-labelledby="pageTitle">
+    <header class="craft-header">
+      <div>
+        <h1 class="craft-title" id="pageTitle">🔨 Catálogo Manual de Crafteo</h1>
+        <p class="intro">Busca recetas por categoría, tier y encantamiento.</p>
+      </div>
+      <div class="controls">
+        <label>Buscar ítem
+          <input type="search" id="searchInput" placeholder="Nombre del ítem" autocomplete="off">
+        </label>
+        <label>Tier
+          <select id="tierSelect">
+            <option value="T4">Tier IV (4)</option>
+            <option value="T5">Tier V (5)</option>
+            <option value="T6" selected>Tier VI (6)</option>
+            <option value="T7">Tier VII (7)</option>
+            <option value="T8">Tier VIII (8)</option>
+          </select>
+        </label>
+        <label>Encantamiento
+          <select id="enchantSelect">
+            <option value=".0">.0 (Plano)</option>
+            <option value=".1">.1 (Verde)</option>
+            <option value=".2">.2 (Azul)</option>
+            <option value=".3">.3 (Morado)</option>
+            <option value=".4">.4 (Dorado)</option>
+          </select>
+        </label>
+      </div>
+    </header>
+    <nav class="cat-tabs" aria-label="Categorías de crafteo">
+      <button class="cat-btn" type="button" data-category="armas" aria-pressed="true">⚔️ Armas</button>
+      <button class="cat-btn" type="button" data-category="cascos" aria-pressed="false">🪖 Cascos</button>
+      <button class="cat-btn" type="button" data-category="armaduras" aria-pressed="false">🛡️ Armaduras</button>
+      <button class="cat-btn" type="button" data-category="zapatos" aria-pressed="false">👢 Zapatos</button>
+      <button class="cat-btn" type="button" data-category="herramientas" aria-pressed="false">⛏️ Herramientas</button>
+      <button class="cat-btn" type="button" data-category="recoleccion" aria-pressed="false">🌿 Recolección</button>
+      <button class="cat-btn" type="button" data-category="bolsas" aria-pressed="false">🎒 Bolsas y Capas</button>
+    </nav>
+    <div id="catalogContent" aria-live="polite"></div>
+    <p class="catalog-note">Cantidades del catálogo manual compartido. Confirma los requisitos vigentes y sus variaciones por tier dentro del juego.</p>
+  </section>
+</main>
+<script>
+const categories={
+ armas:{
+  icon:"⚔️",
+  groups:[
+   {title:"Forja del Guerrero",items:[
+    {name:"Espada Ancha",imageId:"MAIN_SWORD",materials:[["lingote","Lingotes",16],["cuero","Cuero",8]]},
+    {name:"Martillo",imageId:"2H_HAMMER",materials:[["lingote","Lingotes",24]]},
+    {name:"Hacha de Guerra",imageId:"2H_AXE",materials:[["lingote","Lingotes",16],["tablones","Tablones",8]]}
+   ]},
+   {title:"Pabellón de Caza",items:[
+    {name:"Arco de Guerra",imageId:"2H_BOW",materials:[["tablones","Tablones",32]]},
+    {name:"Daga",imageId:"MAIN_DAGGER",materials:[["lingote","Lingotes",12],["cuero","Cuero",12]]}
+   ]},
+   {title:"Torre del Mago",items:[
+    {name:"Bastón Ígneo",imageId:"2H_FIRESTAFF",materials:[["tablones","Tablones",16],["lingote","Lingotes",8]]},
+    {name:"Bastón Sagrado",imageId:"MAIN_HOLYSTAFF",materials:[["tablones","Tablones",16],["tela","Tela",8]]}
+   ]}
+  ]
+ },
+ cascos:{
+  icon:"🪖",
+  groups:[{title:"Cascos de Placas / Cuero / Tela",items:[
+   {name:"Casco de Soldado",imageId:"HEAD_PLATE_SET1",materials:[["lingote","Lingotes",8]]},
+   {name:"Capucha de Mercenario",imageId:"HEAD_LEATHER_SET2",materials:[["cuero","Cuero",8]]},
+   {name:"Hábito de Erudito",imageId:"HEAD_CLOTH_SET1",materials:[["tela","Tela",8]]}
+  ]}]
+ },
+ armaduras:{
+  icon:"🛡️",
+  groups:[{title:"Armaduras de Placas / Cuero / Tela",items:[
+   {name:"Armadura de Soldado",imageId:"ARMOR_PLATE_SET1",materials:[["lingote","Lingotes",16]]},
+   {name:"Chaqueta de Mercenario",imageId:"ARMOR_LEATHER_SET2",materials:[["cuero","Cuero",16]]},
+   {name:"Túnica de Clérigo",imageId:"ARMOR_CLOTH_SET1",materials:[["tela","Tela",16]]}
+  ]}]
+ },
+ zapatos:{
+  icon:"👢",
+  groups:[{title:"Botas / Zapatos / Sandalias",items:[
+   {name:"Botas de Placas (Soldado)",imageId:"SHOES_PLATE_SET1",materials:[["lingote","Lingotes",8]]},
+   {name:"Zapatos de Asesino",imageId:"SHOES_LEATHER_SET3",materials:[["cuero","Cuero",8]]},
+   {name:"Sandalias de Erudito",imageId:"SHOES_CLOTH_SET1",materials:[["tela","Tela",8]]}
+  ]}]
+ },
+ herramientas:{
+  icon:"⛏️",
+  groups:[
+   {title:"Herramientas Estándar",items:[
+    {name:"Pico de Minero",sinEncantamiento:true,materials:[["tablones","Tablones",6],["lingote","Lingotes",2]]},
+    {name:"Hacha de Leñador",sinEncantamiento:true,materials:[["tablones","Tablones",6],["lingote","Lingotes",2]]},
+    {name:"Cuchillo de Despellejar",sinEncantamiento:true,materials:[["tablones","Tablones",6],["lingote","Lingotes",2]]},
+    {name:"Hoz de Cosechador",sinEncantamiento:true,materials:[["tablones","Tablones",6],["lingote","Lingotes",2]]},
+    {name:"Martillo de Piedra",sinEncantamiento:true,materials:[["tablones","Tablones",6],["lingote","Lingotes",2]]},
+    {name:"Caña de Pescar",sinEncantamiento:true,materials:[["tablones","Tablones",6],["tela","Tela",2]]}
+   ]},
+   {title:"Herramientas Avalonianas",items:[
+    {name:"Pico Avaloniano",sinEncantamiento:true,nota:"+Rendimiento de recolección",materials:[["tablones","Tablones",6],["lingote","Lingotes",2],["energia","Energía",10]]}
+   ]}
+  ]
+ },
+ recoleccion:{
+  icon:"🌿",
+  groups:[{title:"Sets y Mochilas de Recolección",items:[
+   {name:"Set Completo de Minero",nota:"Casco (8) + Atuendo (16) + Botas (8)",materials:[["tela","Tela Total",32]]},
+   {name:"Mochila de Minero",sinEncantamiento:true,nota:"Reduce peso de mineral",materials:[["tela","Tela",4],["cuero","Cuero",4]]},
+   {name:"Mochila de Leñador",sinEncantamiento:true,nota:"Reduce peso de madera",materials:[["tela","Tela",4],["cuero","Cuero",4]]},
+   {name:"Mochila de Peletero",sinEncantamiento:true,nota:"Reduce peso de pieles",materials:[["tela","Tela",4],["cuero","Cuero",4]]},
+   {name:"Mochila de Cosechador",sinEncantamiento:true,nota:"Reduce peso de fibra",materials:[["tela","Tela",4],["cuero","Cuero",4]]},
+   {name:"Mochila de Cantero",sinEncantamiento:true,nota:"Reduce peso de piedra",materials:[["tela","Tela",4],["cuero","Cuero",4]]}
+  ]}]
+ },
+ bolsas:{
+  icon:"🎒",
+  groups:[{title:"Bolsas de Carga y Bivión (Perspicacia)",items:[
+   {name:"Bolsa Normal",nota:"Aumenta capacidad de carga",materials:[["tela","Tela",8],["cuero","Cuero",8]]},
+   {name:"Bolsa de Bivión (Perspicacia)",nota:"Convierte Plata en Fama extra",materials:[["tela","Tela",8],["cuero","Cuero",8]]}
+  ]}]
+ }
+};
+
+const itemIdsByName={
+ "Espada Ancha":"MAIN_SWORD","Martillo":"2H_HAMMER","Hacha de Guerra":"2H_AXE",
+ "Arco de Guerra":"2H_BOW","Daga":"MAIN_DAGGER","Bastón Ígneo":"2H_FIRESTAFF","Bastón Sagrado":"MAIN_HOLYSTAFF",
+ "Casco de Soldado":"HEAD_PLATE_SET1","Capucha de Mercenario":"HEAD_LEATHER_SET2","Hábito de Erudito":"HEAD_CLOTH_SET1",
+ "Armadura de Soldado":"ARMOR_PLATE_SET1","Chaqueta de Mercenario":"ARMOR_LEATHER_SET2","Túnica de Clérigo":"ARMOR_CLOTH_SET1",
+ "Botas de Placas (Soldado)":"SHOES_PLATE_SET1","Zapatos de Asesino":"SHOES_LEATHER_SET3","Sandalias de Erudito":"SHOES_CLOTH_SET1"
+};
+const localItemImages={
+ "Espada Ancha":{T4:"imagenes/armas/t4_espada.png"},
+ "Martillo":{T6:"imagenes/armas/t6_martillo.png"},
+ "Casco de Soldado":{T6:"imagenes/equipo/t6_casco_soldado.png"},
+ "Botas de Placas (Soldado)":{T6:"imagenes/equipo/t6_botas_soldado.png"},
+ "Pico de Minero":{T6:"imagenes/herramientas/t6_pico.png"},
+ "Pico Avaloniano":{T6:"imagenes/herramientas/t6_pico_avalon.png"},
+ "Mochila de Minero":{T6:"imagenes/recoleccion/t6_mochila_minero.png"},
+ "Bolsa de Bivión (Perspicacia)":{T6:"imagenes/recoleccion/t6_bolsa_perspicacia.png"}
+};
+const localMaterialImages={
+ lingote:{T4:"imagenes/materiales/lingote_t4.png",T6:"imagenes/materiales/lingote_t6.png"},
+ cuero:{T6:"imagenes/materiales/cuero_t6.png"},
+ tablones:{T6:"imagenes/materiales/tablones_t6.png"},
+ tela:{T6:"imagenes/materiales/tela_t6.png"}
+};
+const materialImageIds={lingote:"METALBAR",cuero:"LEATHER",tablones:"PLANKS",tela:"CLOTH"};
+const categoryFallbacks={armas:"⚔️",cascos:"🪖",armaduras:"🛡️",zapatos:"👢",herramientas:"⛏️",recoleccion:"🌿",bolsas:"🎒"};
+const materialFallbacks={lingote:"🧱",cuero:"🐾",tablones:"🪵",tela:"🧵",energia:"✨"};
+const romanTiers={T4:"IV",T5:"V",T6:"VI",T7:"VII",T8:"VIII"};
+const $=id=>document.getElementById(id);
+let currentCategory="armas";
+
+function renderImageUrl(itemId,tier,enchant){
+ const suffix=enchant?`@${enchant}`:"";
+ return `https://render.albiononline.com/v1/item/${tier}_${itemId}${suffix}.png?quality=1&size=64`;
+}
+
+function addImage(parent,{localPath,remoteId,tier,enchant,alt,fallback}){
+ const remoteUrl=remoteId?renderImageUrl(remoteId,tier,enchant):"";
+ if(!localPath&&!remoteUrl){
+  const icon=document.createElement("span");
+  icon.className="icon-fallback";
+  icon.textContent=fallback;
+  icon.setAttribute("aria-hidden","true");
+  parent.appendChild(icon);
+  return;
+ }
+ const image=document.createElement("img");
+ image.alt=alt;
+ image.loading="lazy";
+ let remoteTried=!localPath;
+ image.src=localPath||remoteUrl;
+ image.addEventListener("error",()=>{
+  if(!remoteTried&&remoteUrl){
+   remoteTried=true;
+   image.src=remoteUrl;
+   return;
+  }
+  console.warn("No se pudo cargar un icono del catálogo:",image.src);
+  const icon=document.createElement("span");
+  icon.className="icon-fallback";
+  icon.textContent=fallback;
+  icon.setAttribute("aria-hidden","true");
+  image.replaceWith(icon);
+ });
+ parent.appendChild(image);
+}
+
+function renderCatalog(){
+ const tier=$("tierSelect").value;
+ const selectedEnchant=Number($("enchantSelect").value.slice(1));
+ const query=$("searchInput").value.trim().toLocaleLowerCase("es");
+ const category=categories[currentCategory];
+ const content=$("catalogContent");
+ content.replaceChildren();
+ let found=false;
+ category.groups.forEach(group=>{
+  const items=group.items.filter(item=>item.name.toLocaleLowerCase("es").includes(query));
+  if(!items.length) return;
+  found=true;
+  const title=document.createElement("h2");
+  title.className="subcat-title";
+  title.textContent=group.title;
+  content.appendChild(title);
+  const grid=document.createElement("div");
+  grid.className="items-grid";
+  items.forEach(item=>{
+   const enchant=item.sinEncantamiento?0:selectedEnchant;
+   const card=document.createElement("article");
+   card.className="item-card";
+   const icon=document.createElement("div");
+   icon.className=`icon-wrapper tier-${tier}`;
+   const localItemPath=(localItemImages[item.name]||{})[tier]||"";
+   addImage(icon,{
+    localPath:localItemPath,
+    remoteId:itemIdsByName[item.name],
+    tier,
+    enchant,
+    alt:item.name,
+    fallback:categoryFallbacks[currentCategory]
+   });
+   const tierBadge=document.createElement("span");
+   tierBadge.className="tier-badge";
+   tierBadge.textContent=romanTiers[tier];
+   icon.appendChild(tierBadge);
+   card.appendChild(icon);
+   const details=document.createElement("div");
+   details.className="item-details";
+   const name=document.createElement("h3");
+   name.className="item-name";
+   name.textContent=`${item.name} (${tier}${enchant?`.${enchant}`:".0"})`;
+   details.appendChild(name);
+   if(item.nota){
+    const note=document.createElement("p");
+    note.className="item-note";
+    note.textContent=item.nota;
+    details.appendChild(note);
+   }
+   const materials=document.createElement("div");
+   materials.className="materials-list";
+   item.materials.forEach(([type,label,quantity])=>{
+    const badge=document.createElement("span");
+    badge.className="mat-badge";
+    addImage(badge,{
+     localPath:(localMaterialImages[type]||{})[tier]||"",
+     remoteId:materialImageIds[type],
+     tier,
+     enchant,
+     alt:label,
+     fallback:materialFallbacks[type]||"📦"
+    });
+    const materialText=document.createElement("span");
+    materialText.textContent=`${label}: `;
+    const amount=document.createElement("strong");
+    amount.textContent=String(quantity);
+    badge.append(materialText,amount);
+    materials.appendChild(badge);
+   });
+   details.appendChild(materials);
+   card.append(icon,details);
+   grid.appendChild(card);
+  });
+  content.appendChild(grid);
+ });
+ if(!found){
+  const empty=document.createElement("p");
+  empty.className="empty";
+  empty.textContent="No hay ítems con ese nombre.";
+  content.appendChild(empty);
+ }
+}
+
+document.querySelectorAll(".cat-btn").forEach(button=>{
+ button.addEventListener("click",()=>{
+  currentCategory=button.dataset.category;
+  document.querySelectorAll(".cat-btn").forEach(item=>
+   item.setAttribute("aria-pressed",String(item===button))
+  );
+  renderCatalog();
+ });
+});
+["searchInput","tierSelect","enchantSelect"].forEach(id=>{
+ $(id).addEventListener(id==="searchInput"?"input":"change",renderCatalog);
+});
+renderCatalog();
+</script>
+</body>
+</html>
